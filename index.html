@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>norun</title>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #2ECC40;
+      --pink: #FF4ECD;
+      --black: #111111;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--green);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Sans KR', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Checkered border top/bottom */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      left: 0; right: 0;
+      height: 24px;
+      background-image: repeating-linear-gradient(
+        90deg,
+        var(--black) 0px, var(--black) 24px,
+        var(--white) 24px, var(--white) 48px
+      );
+      z-index: 100;
+    }
+    body::before { top: 0; }
+    body::after { bottom: 0; }
+
+    .card {
+      background: var(--white);
+      border: 4px solid var(--black);
+      border-radius: 12px;
+      padding: 48px 40px 40px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 8px 8px 0px var(--black);
+      position: relative;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--pink);
+      color: var(--black);
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 13px;
+      letter-spacing: 2px;
+      padding: 4px 14px;
+      border: 2px solid var(--black);
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+
+    .starburst {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 40px;
+      overflow: visible;
+    }
+
+    .starburst svg {
+      width: 100px;
+      height: 100px;
+    }
+
+    .photobooth-img {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+    }
+
+    .photobooth-img img {
+      width: 100%;
+      display: block;
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.25));
+    }
+
+    h1 {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 40px;
+      color: var(--black);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .sub {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 28px;
+    }
+
+    .sub span {
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-yes {
+      background: var(--pink);
+      color: var(--black);
+      border: 3px solid var(--black);
+      border-radius: 8px;
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 22px;
+      padding: 14px 40px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--black);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .btn-yes:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--black);
+    }
+
+    .btn-yes:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--black);
+    }
+
+    .btn-no {
+      background: var(--green);
+      color: var(--black);
+      border: 3px solid var(--black);
+      border-radius: 8px;
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 16px;
+      padding: 10px 24px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--black);
+      position: fixed;
+      transition: none;
+      user-select: none;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 16px;
+    }
+
+    /* YES screen */
+    .yes-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .yes-screen.show {
+      display: flex;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .yes-screen h2 {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 28px;
+      color: var(--black);
+      line-height: 1.4;
+    }
+
+    .yes-screen p {
+      font-size: 15px;
+      color: #333;
+    }
+
+    .confetti-emoji {
+      font-size: 48px;
+      animation: bounce 0.6s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-12px); }
+    }
+
+    .main-content { width: 100%; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- MAIN SCREEN -->
+    <div class="main-content" id="mainScreen">
+      <div class="badge">photobooth</div>
+
+      <div class="starburst">
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+          <polygon points="80,6 97,55 148,55 108,85 123,134 80,105 37,134 52,85 12,55 63,55"
+            fill="#FF4ECD" stroke="#111" stroke-width="3"/>
+        </svg>
+        <div class="photobooth-img">
+          <img src="photobooth.png" alt="포토부스" />
+        </div>
+      </div>
+
+      <h1>동의대 졸업식<br>포토부스 올거지?</h1>
+      <p class="sub">선착순 <span>5팀 무료!</span> · 효민갤러리 · 10:00 AM~</p>
+
+      <div class="btn-row">
+        <button class="btn-yes" onclick="onYes()">YES</button>
+        <button class="btn-no" id="btnNo" onmouseover="runAway()" onclick="runAway()">NO</button>
+      </div>
+
+     </div>
+
+    <!-- YES SCREEN -->
+    <div class="yes-screen" id="yesScreen">
+      <div class="confetti-emoji">🎊</div>
+      <h2>10시까지<br>효민갤러리로 와!</h2>
+      <p>📍 동의대학교 학위수여식<br>포토부스에서 기다릴게!</p>
+      <p style="font-size:13px;color:#888;margin-top:8px;">선착순 5팀 무료 촬영 ✨</p>
+    </div>
+  </div>
+
+  <script>
+    // Place No button randomly on load
+    const btnNo = document.getElementById('btnNo');
+    let placed = false;
+
+    function placeNoBtn() {
+      if (!placed) {
+        const x = window.innerWidth * 0.7;
+        const y = window.innerHeight * 0.55;
+        btnNo.style.left = x + 'px';
+        btnNo.style.top = y + 'px';
+        placed = true;
+      }
+    }
+    placeNoBtn();
+
+    function runAway() {
+      const margin = 20;
+      const bw = btnNo.offsetWidth + margin;
+      const bh = btnNo.offsetHeight + margin;
+      const maxX = window.innerWidth - bw;
+      const maxY = window.innerHeight - bh;
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      btnNo.style.left = x + 'px';
+      btnNo.style.top = y + 'px';
+    }
+
+    function onYes() {
+      document.getElementById('mainScreen').style.display = 'none';
+      document.getElementById('yesScreen').classList.add('show');
+    }
+  </script>
+</body>
+</html>
